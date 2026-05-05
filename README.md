@@ -23,8 +23,8 @@ package main
 import (
 	"context"
 	"fmt"
-	xxl "github.com/xxl-job/xxl-job-executor-go"
-	"github.com/xxl-job/xxl-job-executor-go/example/task"
+	xxl "github.com/nicoaz/xxl-job-executor-go"
+	"github.com/nicoaz/xxl-job-executor-go/example/task"
 	"log"
 )
 
@@ -81,7 +81,7 @@ func customMiddleware(tf xxl.TaskFunc) xxl.TaskFunc {
 
 ```
 # 示例项目
-github.com/xxl-job/xxl-job-executor-go/example/
+github.com/nicoaz/xxl-job-executor-go/example/
 # 与gin框架集成
 https://github.com/gin-middleware/xxl-job-executor
 # xxl-job-admin配置
