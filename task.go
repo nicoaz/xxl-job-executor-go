@@ -7,7 +7,7 @@ import (
 )
 
 // TaskFunc 任务执行函数
-type TaskFunc func(cxt context.Context, param *RunReq) string
+type TaskFunc func(cxt context.Context, param *RunReq) (int64, string)
 
 // Task 任务
 type Task struct {
@@ -43,8 +43,8 @@ func (t *Task) Run(callback func(code int64, msg string)) {
 			cancel()
 		}
 	}(t.Cancel)
-	msg := t.fn(t.Ext, t.Param)
-	callback(SuccessCode, msg)
+	code, msg := t.fn(t.Ext, t.Param)
+	callback(code, msg)
 	return
 }
 

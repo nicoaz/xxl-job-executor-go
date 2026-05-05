@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+
 	xxl "github.com/nicoaz/xxl-job-executor-go"
 	"github.com/nicoaz/xxl-job-executor-go/example/task"
-	"log"
 )
 
 func main() {
@@ -51,10 +52,10 @@ func (l *logger) Error(format string, a ...interface{}) {
 
 // 自定义中间件
 func customMiddleware(tf xxl.TaskFunc) xxl.TaskFunc {
-	return func(cxt context.Context, param *xxl.RunReq) string {
+	return func(cxt context.Context, param *xxl.RunReq) (int64, string) {
 		log.Println("I am a middleware start")
-		res := tf(cxt, param)
+		code, msg := tf(cxt, param)
 		log.Println("I am a middleware end")
-		return res
+		return code, msg
 	}
 }
