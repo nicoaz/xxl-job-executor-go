@@ -135,13 +135,13 @@ func (e *executor) runTask(writer http.ResponseWriter, request *http.Request) {
 	param := &RunReq{}
 	err := json.Unmarshal(req, &param)
 	if err != nil {
-		_, _ = writer.Write(returnCall(param, FailureCode, "params err"))
+		_, _ = writer.Write(returnFailureRes("params err"))
 		e.log.Error("参数解析错误:" + string(req))
 		return
 	}
 	e.log.Info("任务参数:%v", param)
 	if !e.regList.Exists(param.ExecutorHandler) {
-		_, _ = writer.Write(returnCall(param, FailureCode, "Task not registered"))
+		_, _ = writer.Write(returnFailureRes("Task not registered"))
 		e.log.Error("任务[" + Int64ToStr(param.JobID) + "]没有注册:" + param.ExecutorHandler)
 		return
 	}
@@ -155,14 +155,15 @@ func (e *executor) runTask(writer http.ResponseWriter, request *http.Request) {
 				e.runList.Del(Int64ToStr(oldTask.Id))
 			}
 		} else { //单机串行,丢弃后续调度 都进行阻塞
-			_, _ = writer.Write(returnCall(param, FailureCode, "There are tasks running"))
+			_, _ = writer.Write(returnFailureRes("There are tasks running"))
 			e.log.Error("任务[" + Int64ToStr(param.JobID) + "]已经在运行了:" + param.ExecutorHandler)
 			return
 		}
 	}
 
 	cxt := context.Background()
-	task := e.regList.Get(param.ExecutorHandler)
+	template := e.regList.Get(param.ExecutorHandler)
+	task := template.Clone()
 	if param.ExecutorTimeout > 0 {
 		task.Ext, task.Cancel = context.WithTimeout(cxt, time.Duration(param.ExecutorTimeout)*time.Second)
 	} else {

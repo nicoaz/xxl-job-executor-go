@@ -65,3 +65,12 @@ func returnGeneral() []byte {
 	str, _ := json.Marshal(data)
 	return str
 }
+
+func returnFailureRes(msg string) []byte {
+	data := &res{
+		Code: FailureCode,
+		Msg:  msg,
+	}
+	str, _ := json.Marshal(data)
+	return str
+}

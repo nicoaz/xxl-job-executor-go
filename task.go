@@ -23,6 +23,16 @@ type Task struct {
 	log Logger
 }
 
+func (t *Task) Clone() *Task {
+	if t == nil {
+		return &Task{}
+	}
+	return &Task{
+		fn:  t.fn,
+		log: t.log,
+	}
+}
+
 // Run 运行任务
 func (t *Task) Run(callback func(code int64, msg string)) {
 	defer func(cancel func()) {
